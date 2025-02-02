@@ -1,53 +1,43 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useLogin } from "../../hooks/useLogin";
 import styles from "./Login.module.css";
-import { useAuth } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      setError("Both fields are required.");
-      return;
-    }
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      return;
-    }
-    setError("");
-    const user = { id: "1", name: "John Doe", email };
-    login(user);
-    navigate("/"); // Redirect to dashboard
-  };
+  const { register, handleSubmit, errors, onSubmit } = useLogin();
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         <h2>Login</h2>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="email"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             className={styles.input}
+            {...register("email", {
+              required: "Email is required.",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Invalid email address.",
+              },
+            })}
           />
+          {errors.email && (
+            <p className={styles.error}>{errors.email.message}</p>
+          )}
+
           <input
             type="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             className={styles.input}
+            {...register("password", { required: "Password is required." })}
           />
-          {error && <p className={styles.error}>{error}</p>}
+          {errors.password && (
+            <p className={styles.error}>{errors.password.message}</p>
+          )}
+
+          {errors.root && <p className={styles.error}>{errors.root.message}</p>}
+
           <button type="submit" className={styles.loginButton}>
             Login
           </button>

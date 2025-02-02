@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid;
+}
+
+.header * {
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.toggleButton {
+  padding: 20px;
+  background-color: #000 !important;
+  border: none;
+  cursor: pointer;
+  border-radius: 50rem;
+  position: fixed;
+  bottom: 10%;
+  right: 5%;
+}
+
+.hamburger {
+  display: none;
+  padding: 10px;
+  font-size: 24px;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}

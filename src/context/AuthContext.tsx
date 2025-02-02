@@ -5,17 +5,19 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import {
+  getFromLocalStorage,
+  removeFromLocalStorage,
+  saveToLocalStorage,
+} from "../utils/storage";
+import User from "../types/User";
 
 interface AuthContextType {
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   login: (userData: User) => void;
   logout: () => void;
+  isAppLoaded: boolean; // Add this to track app loading state
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,27 +28,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
+    saveToLocalStorage("user", userData); // Store user data in localStorage
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user"); // Clear user data from localStorage
+    removeFromLocalStorage("user"); // Clear user data from localStorage
   };
 
   // On app load, check localStorage for user data
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
+    const savedUser = getFromLocalStorage<User>("user");
     if (savedUser) {
-      setUser(JSON.parse(savedUser));
+      setUser(savedUser);
     }
     setIsAppLoaded(true);
   }, []);
 
-  if (!isAppLoaded) return null;
-
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, isAppLoaded }}>
       {children}
     </AuthContext.Provider>
   );

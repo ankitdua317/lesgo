@@ -1,5 +1,12 @@
+import Composed from "../../components/Charts/Composed";
+
 const Analytics = () => {
-  return <h1>Analytics Page</h1>;
+  return (
+    <div>
+      <h1>Analytics Page</h1>
+      <Composed />
+    </div>
+  );
 };
 
 export default Analytics;
